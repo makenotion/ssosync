@@ -40,3 +40,7 @@ release.yaml
 staging.yaml
 *.orig
 *.rej
+
+# Local files
+.env
+event.json
