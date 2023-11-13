@@ -39,6 +39,7 @@ var (
 )
 
 var cfg *config.Config
+var inputConfig InputConfig
 
 var rootCmd = &cobra.Command{
 	Version: "dev",
@@ -51,6 +52,7 @@ Complete documentation is available at https://github.com/awslabs/ssosync`,
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
+		log.Debug("Cobra command called w args: ", args)
 		err := internal.DoSync(ctx, cfg)
 		if err != nil {
 			return err
@@ -74,13 +76,14 @@ func Execute() {
 }
 
 // Struct for optional input parameters
-type InputEvent struct {
+type InputConfig struct {
 	GroupName string `json:"group_name"`
-	UserName  string `json:"user_name"`
+	// UserName  string `json:"user_name"`
 }
 
-func Handler(ctx context.Context, event InputEvent) (string, error) {
+func Handler(ctx context.Context, event InputConfig) (string, error) {
 	log.Info(event)
+	inputConfig = event
 	err := rootCmd.Execute()
 
 	if err != nil {
@@ -93,6 +96,7 @@ func Handler(ctx context.Context, event InputEvent) (string, error) {
 
 func init() {
 	// init config
+	log.Info("Initializing cobra config")
 	cfg = config.New()
 	cfg.IsLambda = len(os.Getenv("AWS_LAMBDA_FUNCTION_NAME")) > 0
 
@@ -143,12 +147,24 @@ func initConfig() {
 	// config logger
 	logConfig(cfg)
 
+	// ovverride config with fields from the inputConfig
+	if inputConfig.GroupName != "" {
+		cfg.GroupMatch = inputConfig.GroupName
+		log.Infof("Overriding GroupMatch with %s", inputConfig.GroupName)
+	}
+
+	// if inputConfig.UserName != "" {
+	// 	cfg.UserMatch = inputConfig.UserName
+	// 	log.Infof("Overriding UserMatch with %s", inputConfig.UserName)
+	// }
+
 	if cfg.IsLambda {
-		configLambda()
+		// configLambda()
 	}
 }
 
 func configLambda() {
+	log.Info("meep")
 	s := session.Must(session.NewSession())
 	svc := secretsmanager.New(s)
 	secrets := config.NewSecrets(svc)
