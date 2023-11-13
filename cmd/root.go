@@ -96,7 +96,6 @@ func Handler(ctx context.Context, event InputConfig) (string, error) {
 
 func init() {
 	// init config
-	log.Info("Initializing cobra config")
 	cfg = config.New()
 	cfg.IsLambda = len(os.Getenv("AWS_LAMBDA_FUNCTION_NAME")) > 0
 
@@ -159,12 +158,11 @@ func initConfig() {
 	// }
 
 	if cfg.IsLambda {
-		// configLambda()
+		configLambda()
 	}
 }
 
 func configLambda() {
-	log.Info("meep")
 	s := session.Must(session.NewSession())
 	svc := secretsmanager.New(s)
 	secrets := config.NewSecrets(svc)
