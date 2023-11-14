@@ -78,7 +78,7 @@ func Execute() {
 // Struct for optional input parameters
 type InputConfig struct {
 	GroupName string `json:"group_name"`
-	// UserName  string `json:"user_name"`
+	// UserName  string `json:"user_name"` // Optionall can add in the future to filter on a specific user
 }
 
 func Handler(ctx context.Context, event InputConfig) (string, error) {
@@ -152,6 +152,7 @@ func initConfig() {
 		log.Infof("Overriding GroupMatch with %s", inputConfig.GroupName)
 	}
 
+	// Optionally in the future we could match on a specific user as well if better performance is needed
 	// if inputConfig.UserName != "" {
 	// 	cfg.UserMatch = inputConfig.UserName
 	// 	log.Infof("Overriding UserMatch with %s", inputConfig.UserName)
