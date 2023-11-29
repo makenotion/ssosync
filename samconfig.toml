@@ -1,0 +1,11 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "ssosyncV3"
+resolve_s3 = true
+s3_prefix = "ssosyncV3"
+region = "us-west-2"
+profile = "infrastructure-admin"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "FunctionName=\"ssosyncV3\" ScheduleExpression=\"rate(10 minutes)\" LogLevel=\"info\" LogFormat=\"json\" LogRetention=\"\" TimeOut=\"300\" Region=\"us-west-2\" GoogleUserMatch=\"\" GoogleGroupMatch=\"email:aws-sso*\" IgnoreGroups=\"\" IgnoreUsers=\"\" IncludeGroups=\"\" SyncMethod=\"groups\""
+image_repositories = []
